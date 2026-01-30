@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { marketDataSteps } from '../src/steps/marketData.js';
+import { navigationSteps } from '../src/steps/navigation.js';
 import * as utils from '../support/utils';
 
 
@@ -7,28 +8,30 @@ test.describe('Market data Test Suite', () => {
 
 test('Export market data for columns Low, High, Last, Weight Avg with fixed Hours column to CSV', async ({ page }) => {
   const steps = new marketDataSteps(page);
-
-  await page.goto('https://www.epexspot.com/en/market-results?market_area=GB&auction=&trading_date=&delivery_date=2026-01-25&underlying_year=&modality=Continuous&sub_modality=&technology=&data_mode=table&period=&production_period=&product=30');
-
-  const columnCount = 4;
+  const navSteps = new navigationSteps(page);
+   const columnCount = 4;
   const outputFile = 'output/market-data.csv';
 
-  // Fixed column
+  // Navigate to EPEX market results page
+  await navSteps.navigateToEpex();
+ 
+  // Getting Fixed column data
   const fixedHeader = await steps.getFixedColumnHeader();
   const fixedRows = await steps.getFixedColumnRows();
 
-  // Table data
+  // Getting Table data for first 4 columns
   const tableHeaders = await steps.getTableHeaders(4);
   const tableRows = await steps.getTableRows(columnCount);
 
-  // Merge
+  // Merge both fixed column and table data
   const finalHeaders = [fixedHeader, ...tableHeaders];
   const finalRows = utils.mergeFixedColumnWithTable(fixedRows, tableRows);
 
-  // Validations
+  // Validating the data
   expect(finalHeaders.length).toBe(columnCount + 1);
   expect(finalRows.length).toBeGreaterThan(0);
 
+  // Saving data to CSV
  utils.saveDataToCSV(finalHeaders, finalRows, outputFile);
  
 });
