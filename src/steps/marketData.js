@@ -48,29 +48,7 @@ export class marketDataSteps {
     );
   }
 
-  mergeFixedColumnWithTable(fixedRows, tableRows) {
-    return tableRows.map((row, index) => [
-      fixedRows[index],
-      ...row
-    ]);
-  }
 
-  saveDataToCSV(headers, rows, filePath) {
-    const dir = path.dirname(filePath);
 
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
-    }
-
-    const csv = [
-      headers.join(','),
-      ...rows.map(r => r.join(','))
-    ].join('\n');
-
-    fs.writeFileSync(filePath, csv);
-  }
+  
 }

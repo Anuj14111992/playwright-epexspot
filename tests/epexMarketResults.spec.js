@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { marketDataSteps } from '../src/steps/marketData.js';
+import * as utils from '../support/utils';
+
 
 test.describe('Market data Test Suite', () => {
 
@@ -21,13 +23,13 @@ test('Export market data for columns Low, High, Last, Weight Avg with fixed Hour
 
   // Merge
   const finalHeaders = [fixedHeader, ...tableHeaders];
-  const finalRows = steps.mergeFixedColumnWithTable(fixedRows, tableRows);
+  const finalRows = utils.mergeFixedColumnWithTable(fixedRows, tableRows);
 
   // Validations
   expect(finalHeaders.length).toBe(columnCount + 1);
   expect(finalRows.length).toBeGreaterThan(0);
 
- steps.saveDataToCSV(finalHeaders, finalRows, outputFile);
+ utils.saveDataToCSV(finalHeaders, finalRows, outputFile);
  
 });
 });
